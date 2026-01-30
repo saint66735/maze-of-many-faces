@@ -2,6 +2,7 @@ using System;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float playerSpeed = 1.0f;
     [SerializeField] float mouseSensitivity = 2.0f;
     [SerializeField] float upDownRange = 80.0f;
+    [SerializeField] Volume volume;
     InputAction moveAction;
     InputAction lookAction;
     InputAction interactAction;
@@ -97,7 +99,7 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("click");
 
                 // Debug.Log(hit.collider.gameObject.name);
-                hit.collider.gameObject.GetComponentInParent<MaskController>().OnInteract();
+                hit.collider.gameObject.GetComponentInParent<MaskController>().OnInteract(volume);
             }
             else
             {
@@ -105,6 +107,13 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("Did not Hit");
             }
 
+        }
+    }
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Finish"))
+        {
+            Debug.Log("you win");
         }
     }
 }
