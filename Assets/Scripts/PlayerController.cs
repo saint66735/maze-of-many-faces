@@ -12,7 +12,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float playerSpeed = 1.0f;
     [SerializeField] float mouseSensitivity = 2.0f;
     [SerializeField] float upDownRange = 80.0f;
+    [SerializeField] float gravity = 9.81f;
     [SerializeField] Volume volume;
+    [SerializeField] Animator fadeAnim;
     InputAction moveAction;
     InputAction lookAction;
     InputAction interactAction;
@@ -22,7 +24,12 @@ public class PlayerController : MonoBehaviour
     bool isMoving;
     float verticalRotation;
     LayerMask layerMask;
-
+    [SerializeField] AudioSource stepAudio;
+    [SerializeField] float stepInterval = 0.5f;
+    [SerializeField] float velocityThreshold = 2.0f;
+    [SerializeField] AudioClip[] audioClips;
+    float nextStepTime;
+    int lastPlayedIndex = -1;
 
     void Awake()
     {
@@ -32,7 +39,11 @@ public class PlayerController : MonoBehaviour
         }
         if (characterController == null)
         {
-            GetComponent<CharacterController>();
+            gameObject.GetComponent<CharacterController>();
+        }
+        if (stepAudio == null)
+        {
+            gameObject.GetComponent<AudioSource>();
         }
         moveAction = playerControls.FindActionMap("Player").FindAction("Move");
         lookAction = playerControls.FindActionMap("Player").FindAction("Look");
@@ -66,6 +77,7 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleRotation();
         HandleInteraction();
+        HandleFootsteps();
     }
     void HandleMovement()
     {
@@ -73,12 +85,14 @@ public class PlayerController : MonoBehaviour
         float horizontalSpeed = moveInput.x * playerSpeed;
 
         Vector3 horizontalMovement = new Vector3(horizontalSpeed, 0, verticalSpeed);
-
+        HandleGravity();
         horizontalMovement = transform.rotation * horizontalMovement;
         currentMovement.x = horizontalMovement.x;
         currentMovement.z = horizontalMovement.z;
 
         characterController.Move(currentMovement * Time.deltaTime);
+
+        isMoving = moveInput.y != 0 || moveInput.x != 0;
     }
     void HandleRotation()
     {
@@ -89,16 +103,31 @@ public class PlayerController : MonoBehaviour
         verticalRotation = Mathf.Clamp(verticalRotation, -upDownRange, upDownRange);
         playerCamera.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
     }
+    void HandleGravity()
+    {
+        if (!characterController.isGrounded)
+        {
+            currentMovement.y -= gravity * Time.deltaTime;
+        }
+    }
+    void HandleFootsteps()
+    {
+        if (characterController.isGrounded && isMoving && Time.time > nextStepTime && characterController.velocity.magnitude > velocityThreshold)
+        {
+            PlayFootstepSounds();
+            nextStepTime = Time.time + stepInterval;
+        }
+    }
     void HandleInteraction()
     {
         if (interactAction.triggered)
         {
             RaycastHit hit;
-            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask))
+            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.TransformDirection(Vector3.forward), out hit, 1.5f, layerMask))
             {
-                Debug.Log("click");
+                fadeAnim.SetTrigger("fade");
 
-                // Debug.Log(hit.collider.gameObject.name);
+                Debug.Log("click");
                 hit.collider.gameObject.GetComponentInParent<MaskController>().OnInteract(volume);
             }
             else
@@ -114,6 +143,29 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Finish"))
         {
             Debug.Log("you win");
+        }
+    }
+    void PlayFootstepSounds()
+    {
+        if (stepAudio == null)
+        {
+            Debug.Log("step");
+        }
+        else if (stepAudio != null && audioClips == null)
+        {
+            stepAudio.PlayOneShot(stepAudio.clip);
+        }
+        else if (stepAudio != null && audioClips != null)
+        {
+            int indexToUse = -1;
+            if (audioClips.Length > 1)
+            {
+                while (indexToUse == lastPlayedIndex)
+                {
+                    indexToUse = UnityEngine.Random.Range(0, audioClips.Length - 1);
+                }
+            }
+
         }
     }
 }
