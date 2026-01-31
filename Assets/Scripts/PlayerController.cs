@@ -3,9 +3,12 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Player controls")]
     [SerializeField] Camera playerCamera;
     [SerializeField] CharacterController characterController;
     [SerializeField] InputActionAsset playerControls;
@@ -13,8 +16,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float mouseSensitivity = 2.0f;
     [SerializeField] float upDownRange = 80.0f;
     [SerializeField] float gravity = 9.81f;
-    [SerializeField] Volume volume;
-    [SerializeField] Animator fadeAnim;
     InputAction moveAction;
     InputAction lookAction;
     InputAction interactAction;
@@ -24,12 +25,19 @@ public class PlayerController : MonoBehaviour
     bool isMoving;
     float verticalRotation;
     LayerMask layerMask;
+    [Header("Audio controls")]
     [SerializeField] AudioSource stepAudio;
     [SerializeField] float stepInterval = 0.5f;
     [SerializeField] float velocityThreshold = 2.0f;
     [SerializeField] AudioClip[] audioClips;
     float nextStepTime;
     int lastPlayedIndex = -1;
+    [Header("UI controls")]
+    [SerializeField] Volume volume;
+    [SerializeField] RawImage rawImage;
+    [SerializeField] Animator equipAnimator;
+    [SerializeField] TMP_Text interactText;
+
 
     void Awake()
     {
@@ -78,6 +86,7 @@ public class PlayerController : MonoBehaviour
         HandleRotation();
         HandleInteraction();
         HandleFootsteps();
+        HandleInteractableText();
     }
     void HandleMovement()
     {
@@ -125,10 +134,11 @@ public class PlayerController : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.TransformDirection(Vector3.forward), out hit, 1.5f, layerMask))
             {
-                fadeAnim.SetTrigger("fade");
-
+                equipAnimator.SetTrigger("equip");
+                Texture overlay;
                 Debug.Log("click");
-                hit.collider.gameObject.GetComponentInParent<MaskController>().OnInteract(volume);
+                hit.collider.gameObject.GetComponentInParent<MaskController>().OnInteract(volume, out overlay);
+                rawImage.texture = overlay;
             }
             else
             {
@@ -158,14 +168,39 @@ public class PlayerController : MonoBehaviour
         else if (stepAudio != null && audioClips != null)
         {
             int indexToUse = -1;
+            bool loop = true;
             if (audioClips.Length > 1)
             {
-                while (indexToUse == lastPlayedIndex)
+                while (loop)
                 {
                     indexToUse = UnityEngine.Random.Range(0, audioClips.Length - 1);
+                    if (indexToUse != lastPlayedIndex)
+                    {
+                        lastPlayedIndex = indexToUse;
+                        loop = false;
+                    }
                 }
+                stepAudio.PlayOneShot(audioClips[indexToUse]);
             }
 
+        }
+    }
+    void HandleInteractableText()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.TransformDirection(Vector3.forward), out hit, 1.5f, layerMask))
+        {
+            if (!interactText.gameObject.activeSelf)
+            {
+                interactText.gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            if (interactText.gameObject.activeSelf)
+            {
+                interactText.gameObject.SetActive(false);
+            }
         }
     }
 }
