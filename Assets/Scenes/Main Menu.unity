@@ -179,6 +179,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: d5eec3804f3923649b5b0acc2e907459, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 982b9a24c16202844811de6ce59dcef9, type: 2}
     - target: {fileID: 919132149155446097, guid: d5eec3804f3923649b5b0acc2e907459, type: 3}
       propertyPath: m_Name
       value: mask 2
@@ -253,6 +257,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: f5f92c53724fb9948846ec43f3ee5f92, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 8d4cb766a3ef28749bcd553d57ad9407, type: 2}
     - target: {fileID: 919132149155446097, guid: f5f92c53724fb9948846ec43f3ee5f92, type: 3}
       propertyPath: m_Name
       value: mask 1
@@ -267,6 +275,55 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f5f92c53724fb9948846ec43f3ee5f92, type: 3}
   m_PrefabInstance: {fileID: 175232433}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &326461337
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 326461339}
+  - component: {fileID: 326461338}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &326461338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326461337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 10fc4df2da32a41aaa32d77bc913491c, type: 2}
+--- !u!4 &326461339
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326461337}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.159995, y: 2.8128054, z: 9.334123}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &392938748
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -327,6 +384,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 11ae869dc874ed943bb2ca28e5feefae, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 51d631a845a121045b3aba84ab877946, type: 2}
     - target: {fileID: 919132149155446097, guid: 11ae869dc874ed943bb2ca28e5feefae, type: 3}
       propertyPath: m_Name
       value: mask 3
@@ -480,6 +541,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 8438a94543553ed43b191326be0e5604, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5028583914e8e7a4295d0b3558c6c4d5, type: 2}
     - target: {fileID: 919132149155446097, guid: 8438a94543553ed43b191326be0e5604, type: 3}
       propertyPath: m_Name
       value: mask 4
@@ -859,7 +924,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -1474,3 +1539,4 @@ SceneRoots:
   - {fileID: 594810663}
   - {fileID: 416310209}
   - {fileID: 1505744774}
+  - {fileID: 326461339}
